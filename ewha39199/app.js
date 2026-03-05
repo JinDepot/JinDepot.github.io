@@ -82,12 +82,21 @@ function runDraw() {
 
 // ── Renderers ───────────────────────────────────────────────────────────────
 function cardColor(value) {
-  // Cool tint for low values, warm tint for high values, neutral near λ=10
-  if (value <= 5)  return '#ddeeff';   // deep below mean → light blue
-  if (value <= 7)  return '#eef4ff';   // below mean → pale blue
-  if (value <= 13) return '#ffffff';   // near mean → white
-  if (value <= 16) return '#fff4e8';   // above mean → pale orange
-  return '#ffe4d0';                    // well above mean → light red-orange
+  // Gradient centered on λ=10, spread across typical Poisson(10) range
+  if (value <= 4)  return '#90c8f0';
+  if (value === 5) return '#aad4f5';
+  if (value === 6) return '#c4e1f8';
+  if (value === 7) return '#daeeff';
+  if (value === 8) return '#edf6ff';
+  if (value === 9) return '#f7fbff';
+  if (value === 10) return '#ffffff';
+  if (value === 11) return '#fff8f0';
+  if (value === 12) return '#ffecd8';
+  if (value === 13) return '#ffdfc0';
+  if (value === 14) return '#ffd0a0';
+  if (value === 15) return '#ffbc78';
+  if (value === 16) return '#ffa550';
+  return '#ff8c30';
 }
 
 function renderCards(draws, average, i) {
