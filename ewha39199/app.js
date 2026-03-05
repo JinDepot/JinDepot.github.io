@@ -75,7 +75,7 @@ function poissonSample(lambda) {
 }
 
 function draw30() {
-  const draws = Array.from({ length: 30 }, () => poissonSample(10));
+  const draws = Array.from({ length: 30 }, () => poissonSample(11.1));
   const average = +(draws.reduce((a, b) => a + b, 0) / 30).toFixed(2);
   return { draws, average };
 }
@@ -151,19 +151,20 @@ function runDraw() {
 
 // ── Renderers ─────────────────────────────────────────────────────────────────
 function cardColor(value) {
-  if (value <= 4)   return '#90c8f0';
-  if (value === 5)  return '#aad4f5';
-  if (value === 6)  return '#c4e1f8';
-  if (value === 7)  return '#daeeff';
-  if (value === 8)  return '#edf6ff';
-  if (value === 9)  return '#f7fbff';
-  if (value === 10) return '#ffffff';
-  if (value === 11) return '#fff8f0';
-  if (value === 12) return '#ffecd8';
-  if (value === 13) return '#ffdfc0';
-  if (value === 14) return '#ffd0a0';
-  if (value === 15) return '#ffbc78';
-  if (value === 16) return '#ffa550';
+  // Gradient centered on λ=11.1; white at 11, blue below, orange above
+  if (value <= 5)   return '#90c8f0';
+  if (value === 6)  return '#aad4f5';
+  if (value === 7)  return '#c4e1f8';
+  if (value === 8)  return '#daeeff';
+  if (value === 9)  return '#edf6ff';
+  if (value === 10) return '#f7fbff';
+  if (value === 11) return '#ffffff';  // mean ≈ 11.1
+  if (value === 12) return '#fff8f0';
+  if (value === 13) return '#ffecd8';
+  if (value === 14) return '#ffdfc0';
+  if (value === 15) return '#ffd0a0';
+  if (value === 16) return '#ffbc78';
+  if (value === 17) return '#ffa550';
   return '#ff8c30';
 }
 
