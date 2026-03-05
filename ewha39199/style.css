@@ -1,3 +1,12 @@
+/* ── Palette ─────────────────────────────────────────────────────────────────
+   Plum dark  : #4F0C28
+   Plum mid   : #7A1040
+   Plum light : #F5E8EE
+   Periwinkle : #C5D2F8
+   Peri light : #EDF0FD
+   Peri dark  : #8FA3E8
+────────────────────────────────────────────────────────────────────────────── */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,8 +15,8 @@
 
 body {
   font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
-  background: #eef2f8;
-  color: #1a2a4a;
+  background: #EDF0FD;
+  color: #4F0C28;
   min-height: 100vh;
 }
 
@@ -21,7 +30,7 @@ h1 {
   font-size: 2.4rem;
   font-weight: 800;
   text-align: center;
-  color: #1a2a4a;
+  color: #4F0C28;
   margin-bottom: 36px;
   letter-spacing: 0.03em;
 }
@@ -29,7 +38,7 @@ h1 {
 h2 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #2c4a7c;
+  color: #7A1040;
   margin-bottom: 18px;
 }
 
@@ -38,7 +47,7 @@ h2 {
   background: white;
   border-radius: 18px;
   padding: 32px 28px;
-  box-shadow: 0 2px 16px rgba(44, 74, 124, 0.08);
+  box-shadow: 0 2px 16px rgba(79, 12, 40, 0.08);
   text-align: center;
   margin-bottom: 28px;
 }
@@ -46,7 +55,7 @@ h2 {
 .label {
   font-size: 1rem;
   font-weight: 700;
-  color: #4a6080;
+  color: #7A1040;
   margin-bottom: 16px;
   letter-spacing: 0.04em;
 }
@@ -62,9 +71,9 @@ h2 {
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  border: 2px solid #2c4a7c;
-  background: white;
-  color: #2c4a7c;
+  border: none;
+  background: #C5D2F8;
+  color: #4F0C28;
   font-size: 1.3rem;
   font-weight: 800;
   cursor: pointer;
@@ -72,24 +81,27 @@ h2 {
 }
 
 .section-btn:hover {
-  background: #e8f0ff;
+  background: #8FA3E8;
+  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 12, 40, 0.18);
 }
 
 .section-btn.active {
-  background: #2c4a7c;
+  background: #4F0C28;
   color: white;
-  box-shadow: 0 4px 12px rgba(44, 74, 124, 0.35);
+  box-shadow: 0 4px 14px rgba(79, 12, 40, 0.4);
+  transform: translateY(-2px);
 }
 
 .selected-label {
   font-size: 0.9rem;
-  color: #8090a8;
+  color: #9A6070;
   margin-bottom: 22px;
 }
 
 .draw-btn {
-  background: #2c4a7c;
+  background: #4F0C28;
   color: white;
   border: none;
   border-radius: 12px;
@@ -102,13 +114,13 @@ h2 {
 }
 
 .draw-btn:hover:not(:disabled) {
-  background: #1a3060;
+  background: #7A1040;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(44, 74, 124, 0.35);
+  box-shadow: 0 6px 16px rgba(79, 12, 40, 0.35);
 }
 
 .draw-btn:disabled {
-  background: #b8c8dc;
+  background: #D9C4CB;
   cursor: not-allowed;
 }
 
@@ -118,7 +130,7 @@ h2 {
   font-size: 0.85rem;
   font-weight: 600;
 }
-.sync-status.syncing { color: #8090a8; }
+.sync-status.syncing { color: #9A6070; }
 .sync-status.success { color: #2e7d32; }
 .sync-status.error   { color: #c62828; }
 
@@ -127,7 +139,7 @@ h2 {
   background: white;
   border-radius: 18px;
   padding: 28px;
-  box-shadow: 0 2px 16px rgba(44, 74, 124, 0.08);
+  box-shadow: 0 2px 16px rgba(79, 12, 40, 0.08);
   margin-bottom: 28px;
 }
 
@@ -139,7 +151,7 @@ h2 {
 }
 
 .card {
-  border: 1.5px solid #d0e2f4;
+  border: 1.5px solid #C5D2F8;
   border-radius: 10px;
   aspect-ratio: 2 / 3;
   display: flex;
@@ -147,7 +159,7 @@ h2 {
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+  box-shadow: 0 2px 8px rgba(79, 12, 40, 0.07);
   animation: flipIn 0.45s ease both;
   cursor: default;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -155,7 +167,7 @@ h2 {
 
 .card:hover {
   transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 6px 16px rgba(44, 74, 124, 0.18);
+  box-shadow: 0 6px 16px rgba(79, 12, 40, 0.18);
   z-index: 2;
 }
 
@@ -164,14 +176,14 @@ h2 {
   top: 5px;
   left: 7px;
   font-size: 0.6rem;
-  color: #a0b4cc;
+  color: #9A6070;
   font-weight: 600;
 }
 
 .card-value {
   font-size: 1.55rem;
   font-weight: 800;
-  color: #1a2a4a;
+  color: #4F0C28;
 }
 
 @keyframes flipIn {
@@ -190,35 +202,36 @@ h2 {
   align-items: center;
   justify-content: space-between;
   padding-top: 18px;
-  border-top: 1.5px solid #eef4fc;
+  border-top: 1.5px solid #EDF0FD;
 }
 
 .summary span {
   font-size: 0.95rem;
-  color: #4a6080;
+  color: #7A1040;
 }
 
 .summary strong {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #2c4a7c;
+  color: #4F0C28;
   margin-left: 4px;
 }
 
 .export-btn {
-  background: #eef4ff;
-  color: #2c4a7c;
-  border: 1.5px solid #b8d0ec;
+  background: #C5D2F8;
+  color: #4F0C28;
+  border: none;
   border-radius: 8px;
   padding: 8px 18px;
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .export-btn:hover {
-  background: #d8eaff;
+  background: #8FA3E8;
+  color: white;
 }
 
 /* ── History table ──────────────────────────────────────────────────────── */
@@ -226,7 +239,7 @@ h2 {
   background: white;
   border-radius: 18px;
   padding: 28px;
-  box-shadow: 0 2px 16px rgba(44, 74, 124, 0.08);
+  box-shadow: 0 2px 16px rgba(79, 12, 40, 0.08);
 }
 
 #history-table {
@@ -237,18 +250,18 @@ h2 {
 #history-table th {
   text-align: left;
   padding: 10px 16px;
-  background: #f0f6ff;
-  color: #4a6080;
+  background: #EDF0FD;
+  color: #7A1040;
   font-weight: 700;
   font-size: 0.88rem;
-  border-bottom: 2px solid #dce8f8;
+  border-bottom: 2px solid #C5D2F8;
 }
 
 #history-table td {
   padding: 10px 16px;
-  border-bottom: 1px solid #f0f4f8;
+  border-bottom: 1px solid #F5E8EE;
   font-size: 0.95rem;
-  color: #2a3a56;
+  color: #4F0C28;
 }
 
 #history-table tr:last-child td {
@@ -256,7 +269,7 @@ h2 {
 }
 
 #history-table tr:hover td {
-  background: #f6faff;
+  background: #EDF0FD;
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
