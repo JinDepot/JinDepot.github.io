@@ -1,2 +1,2 @@
 # JinDepot.github.io
-Course Raffle - Poisson Draw Program
+Course Raffle - iid Draw Program
