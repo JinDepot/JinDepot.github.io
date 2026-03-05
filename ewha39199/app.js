@@ -101,7 +101,7 @@ function syncToSheet(section, date, draws, average) {
 
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ section, date, draws, average, token: APPS_SCRIPT_SECRET }),
     redirect: 'follow'
   })
