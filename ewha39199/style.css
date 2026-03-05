@@ -120,7 +120,8 @@ h2 {
 }
 
 .draw-btn:disabled {
-  background: #D9C4CB;
+  background: #4F0C28;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
