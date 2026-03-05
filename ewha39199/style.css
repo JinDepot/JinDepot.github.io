@@ -118,7 +118,7 @@ h2 {
 .auth-submit-btn {
   background: #4F0C28;
   color: white;
-  border: none;
+  border: 2px solid #4F0C28;
   border-radius: 10px;
   padding: 12px 40px;
   font-size: 1rem;
@@ -167,8 +167,8 @@ h2 {
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  border: none;
-  background: #C5D2F8;
+  border: 2px solid #4F0C28;
+  background: transparent;
   color: #4F0C28;
   font-size: 1.3rem;
   font-weight: 800;
@@ -199,7 +199,7 @@ h2 {
 .draw-btn {
   background: #4F0C28;
   color: white;
-  border: none;
+  border: 2px solid #4F0C28;
   border-radius: 12px;
   padding: 14px 48px;
   font-size: 1.1rem;
