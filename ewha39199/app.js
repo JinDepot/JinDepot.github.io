@@ -1,4 +1,72 @@
-// ── Poisson sampler (Knuth algorithm) ──────────────────────────────────────
+// ── Config ───────────────────────────────────────────────────────────────────
+const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbzKxoki5ug2K3RwZJS-DayTeeB9x3Ql6tMdlG-HQ8LDj3VR2ppgGJhyyh4ezkDN-Esv/exec';
+const APPS_SCRIPT_SECRET = '8aa9e3b8642204f98a98d86f390858f5f6b91f99';
+const AUTHORIZED_USER    = 'JinDepot';
+
+// ── Auth state ───────────────────────────────────────────────────────────────
+let authenticated = false;
+
+async function verifyPAT(pat) {
+  const res = await fetch('https://api.github.com/user', {
+    headers: { Authorization: `token ${pat}` }
+  });
+  if (!res.ok) return false;
+  const data = await res.json();
+  return data.login === AUTHORIZED_USER;
+}
+
+async function initAuth() {
+  const stored = localStorage.getItem('cr_pat');
+  if (stored) {
+    const valid = await verifyPAT(stored).catch(() => false);
+    if (valid) {
+      authenticated = true;
+      return;
+    }
+    localStorage.removeItem('cr_pat');
+  }
+  showAuthModal();
+}
+
+function showAuthModal() {
+  document.getElementById('auth-modal').style.display = 'flex';
+}
+
+function hideAuthModal() {
+  document.getElementById('auth-modal').style.display = 'none';
+}
+
+async function submitPAT() {
+  const input = document.getElementById('pat-input');
+  const error = document.getElementById('auth-error');
+  const btn   = document.getElementById('auth-submit');
+  const pat   = input.value.trim();
+
+  if (!pat) return;
+
+  btn.disabled = true;
+  btn.textContent = '확인 중...';
+  error.textContent = '';
+
+  const valid = await verifyPAT(pat).catch(() => false);
+
+  if (valid) {
+    localStorage.setItem('cr_pat', pat);
+    authenticated = true;
+    hideAuthModal();
+    // Re-enable draw button if a section is already selected
+    if (selectedSection) {
+      document.getElementById('draw-btn').disabled = false;
+    }
+  } else {
+    error.textContent = 'JinDepot 계정의 유효한 PAT이 아닙니다.';
+    btn.disabled = false;
+    btn.textContent = '확인';
+    input.value = '';
+  }
+}
+
+// ── Poisson sampler (Knuth algorithm) ────────────────────────────────────────
 function poissonSample(lambda) {
   const L = Math.exp(-lambda);
   let k = 0, p = 1;
@@ -12,7 +80,7 @@ function draw30() {
   return { draws, average };
 }
 
-// ── localStorage helpers ────────────────────────────────────────────────────
+// ── localStorage helpers ──────────────────────────────────────────────────────
 function getToday() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -25,9 +93,7 @@ function saveHistory(i, history) {
   localStorage.setItem(`draws_${i}`, JSON.stringify(history));
 }
 
-// ── Google Sheets sync ──────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKxoki5ug2K3RwZJS-DayTeeB9x3Ql6tMdlG-HQ8LDj3VR2ppgGJhyyh4ezkDN-Esv/exec';
-
+// ── Google Sheets sync ────────────────────────────────────────────────────────
 function syncToSheet(section, date, draws, average) {
   const syncStatus = document.getElementById('sync-status');
   syncStatus.textContent = '⏳ 구글 시트 저장 중...';
@@ -36,7 +102,7 @@ function syncToSheet(section, date, draws, average) {
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ section, date, draws, average }),
+    body: JSON.stringify({ section, date, draws, average, token: APPS_SCRIPT_SECRET }),
     redirect: 'follow'
   })
     .then(() => {
@@ -49,10 +115,10 @@ function syncToSheet(section, date, draws, average) {
     });
 }
 
-// ── State ───────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let selectedSection = null;
 
-// ── UI actions ──────────────────────────────────────────────────────────────
+// ── UI actions ────────────────────────────────────────────────────────────────
 function selectSection(i) {
   selectedSection = i;
 
@@ -60,15 +126,18 @@ function selectSection(i) {
     btn.classList.toggle('active', idx + 1 === i);
   });
   document.getElementById('selected-label').textContent = `선택된 분반: ${i}`;
-  document.getElementById('draw-btn').disabled = false;
 
-  // Hide previous draw panel; show history for this section
+  // Only enable draw button if authenticated
+  if (authenticated) {
+    document.getElementById('draw-btn').disabled = false;
+  }
+
   document.getElementById('cards-section').style.display = 'none';
   renderHistory(i);
 }
 
 function runDraw() {
-  if (!selectedSection) return;
+  if (!authenticated || !selectedSection) return;
 
   const { draws, average } = draw30();
   const history = loadHistory(selectedSection);
@@ -80,15 +149,14 @@ function runDraw() {
   syncToSheet(selectedSection, getToday(), draws, average);
 }
 
-// ── Renderers ───────────────────────────────────────────────────────────────
+// ── Renderers ─────────────────────────────────────────────────────────────────
 function cardColor(value) {
-  // Gradient centered on λ=10, spread across typical Poisson(10) range
-  if (value <= 4)  return '#90c8f0';
-  if (value === 5) return '#aad4f5';
-  if (value === 6) return '#c4e1f8';
-  if (value === 7) return '#daeeff';
-  if (value === 8) return '#edf6ff';
-  if (value === 9) return '#f7fbff';
+  if (value <= 4)   return '#90c8f0';
+  if (value === 5)  return '#aad4f5';
+  if (value === 6)  return '#c4e1f8';
+  if (value === 7)  return '#daeeff';
+  if (value === 8)  return '#edf6ff';
+  if (value === 9)  return '#f7fbff';
   if (value === 10) return '#ffffff';
   if (value === 11) return '#fff8f0';
   if (value === 12) return '#ffecd8';
@@ -131,7 +199,6 @@ function renderHistory(i) {
     return;
   }
 
-  // Most recent first
   [...history].reverse().forEach((row, idx) => {
     const tr = document.createElement('tr');
     const rowNum = history.length - idx;
@@ -143,7 +210,7 @@ function renderHistory(i) {
   document.getElementById('history-section').style.display = 'block';
 }
 
-// ── CSV export ──────────────────────────────────────────────────────────────
+// ── CSV export ────────────────────────────────────────────────────────────────
 function exportCSV(i) {
   const history = loadHistory(i);
   if (history.length === 0) return;
@@ -160,3 +227,11 @@ function exportCSV(i) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitPAT();
+  });
+  initAuth();
+});

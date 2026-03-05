@@ -7,6 +7,18 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Auth modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-box">
+      <h2 class="modal-title">Course Raffle</h2>
+      <p class="modal-desc">GitHub Personal Access Token을 입력하세요.<br><span class="modal-hint">필요 권한: <code>read:user</code></span></p>
+      <input id="pat-input" type="password" class="pat-input" placeholder="ghp_...">
+      <p id="auth-error" class="auth-error"></p>
+      <button id="auth-submit" class="auth-submit-btn" onclick="submitPAT()">확인</button>
+    </div>
+  </div>
+
   <div class="container">
     <h1>Course Raffle</h1>
 

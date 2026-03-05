@@ -42,6 +42,102 @@ h2 {
   margin-bottom: 18px;
 }
 
+/* ── Auth modal ─────────────────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(79, 12, 40, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 360px;
+  max-width: 90vw;
+  box-shadow: 0 8px 40px rgba(79, 12, 40, 0.25);
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4F0C28;
+  margin-bottom: 12px;
+}
+
+.modal-desc {
+  font-size: 0.9rem;
+  color: #7A1040;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.modal-hint {
+  font-size: 0.8rem;
+  color: #9A6070;
+}
+
+.modal-hint code {
+  background: #EDF0FD;
+  color: #4F0C28;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+}
+
+.pat-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #C5D2F8;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #4F0C28;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 8px;
+}
+
+.pat-input:focus {
+  border-color: #4F0C28;
+}
+
+.auth-error {
+  min-height: 1.2em;
+  font-size: 0.82rem;
+  color: #c62828;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.auth-submit-btn {
+  background: #4F0C28;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 40px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.18s ease;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #7A1040;
+}
+
+.auth-submit-btn:disabled {
+  background: #4F0C28;
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 /* ── Controls ───────────────────────────────────────────────────────────── */
 .controls {
   background: white;
