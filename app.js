@@ -25,6 +25,30 @@ function saveHistory(i, history) {
   localStorage.setItem(`draws_${i}`, JSON.stringify(history));
 }
 
+// ── Google Sheets sync ──────────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKxoki5ug2K3RwZJS-DayTeeB9x3Ql6tMdlG-HQ8LDj3VR2ppgGJhyyh4ezkDN-Esv/exec';
+
+function syncToSheet(section, date, draws, average) {
+  const syncStatus = document.getElementById('sync-status');
+  syncStatus.textContent = '⏳ 구글 시트 저장 중...';
+  syncStatus.className = 'sync-status syncing';
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ section, date, draws, average }),
+    redirect: 'follow'
+  })
+    .then(() => {
+      syncStatus.textContent = '✓ 구글 시트에 저장됨';
+      syncStatus.className = 'sync-status success';
+    })
+    .catch(() => {
+      syncStatus.textContent = '✗ 구글 시트 저장 실패';
+      syncStatus.className = 'sync-status error';
+    });
+}
+
 // ── State ───────────────────────────────────────────────────────────────────
 let selectedSection = null;
 
@@ -53,6 +77,7 @@ function runDraw() {
 
   renderCards(draws, average, selectedSection);
   renderHistory(selectedSection);
+  syncToSheet(selectedSection, getToday(), draws, average);
 }
 
 // ── Renderers ───────────────────────────────────────────────────────────────
