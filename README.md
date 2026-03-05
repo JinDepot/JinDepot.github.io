@@ -1,2 +1,4 @@
-# JinDepot.github.io
-Course Raffle - iid Draw Program
+# EWHA 39199 Course Raffle
+__
+
+- Central Limit Theorem Experiment
