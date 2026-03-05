@@ -150,22 +150,14 @@ function runDraw() {
 }
 
 // ── Renderers ─────────────────────────────────────────────────────────────────
-function cardColor(value) {
-  // Gradient centered on λ=11.1; white at 11, blue below, orange above
-  if (value <= 5)   return '#90c8f0';
-  if (value === 6)  return '#aad4f5';
-  if (value === 7)  return '#c4e1f8';
-  if (value === 8)  return '#daeeff';
-  if (value === 9)  return '#edf6ff';
-  if (value === 10) return '#f7fbff';
-  if (value === 11) return '#ffffff';  // mean ≈ 11.1
-  if (value === 12) return '#fff8f0';
-  if (value === 13) return '#ffecd8';
-  if (value === 14) return '#ffdfc0';
-  if (value === 15) return '#ffd0a0';
-  if (value === 16) return '#ffbc78';
-  if (value === 17) return '#ffa550';
-  return '#ff8c30';
+const PASTEL_COLORS = [
+  '#FFB3C1', '#FFDAB9', '#FFFACD', '#B5EAD7', '#C9B1FF',
+  '#BAD7F2', '#C8F0C8', '#FFCBA4', '#DDA0DD', '#AED6F1',
+  '#FFC8DD', '#BDE0FE', '#CDB4DB', '#FDFFB6', '#B9FBC0'
+];
+
+function randomPastel() {
+  return PASTEL_COLORS[Math.floor(Math.random() * PASTEL_COLORS.length)];
 }
 
 function renderCards(draws, average, i) {
@@ -176,7 +168,7 @@ function renderCards(draws, average, i) {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.animationDelay = `${idx * 40}ms`;
-    card.style.backgroundColor = cardColor(val);
+    card.style.backgroundColor = randomPastel();
     card.innerHTML = `
       <span class="card-index">${idx + 1}</span>
       <span class="card-value">${val}</span>
