@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Raffle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Course Raffle</h1>
+
+    <section class="controls">
+      <p class="label">분반 선택</p>
+      <div class="section-buttons">
+        <button class="section-btn" onclick="selectSection(1)">1</button>
+        <button class="section-btn" onclick="selectSection(2)">2</button>
+        <button class="section-btn" onclick="selectSection(3)">3</button>
+      </div>
+      <p class="selected-label" id="selected-label">선택된 분반: —</p>
+      <button class="draw-btn" id="draw-btn" onclick="runDraw()" disabled>뽑기!</button>
+      <p class="sync-status" id="sync-status"></p>
+    </section>
+
+    <section class="cards-section" id="cards-section" style="display:none">
+      <h2>분반 <span id="cards-section-num"></span> — 이번 뽑기 결과</h2>
+      <div class="card-grid" id="card-grid"></div>
+      <div class="summary">
+        <span>평균: <strong id="avg-display"></strong></span>
+        <button class="export-btn" id="export-btn">CSV 다운로드</button>
+      </div>
+    </section>
+
+    <section class="history-section" id="history-section" style="display:none">
+      <h2>과거 기록 — 분반 <span id="history-section-num"></span></h2>
+      <table id="history-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>날짜</th>
+            <th>평균</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
