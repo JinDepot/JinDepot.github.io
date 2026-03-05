@@ -186,7 +186,6 @@ function renderCards(draws, average, i) {
   document.getElementById('cards-section-num').textContent = i;
   document.getElementById('avg-display').textContent = average;
   document.getElementById('cards-section').style.display = 'block';
-  document.getElementById('export-btn').onclick = () => exportCSV(i);
 }
 
 function renderHistory(i) {
@@ -210,23 +209,6 @@ function renderHistory(i) {
   document.getElementById('history-section').style.display = 'block';
 }
 
-// ── CSV export ────────────────────────────────────────────────────────────────
-function exportCSV(i) {
-  const history = loadHistory(i);
-  if (history.length === 0) return;
-
-  const header = ['draw_date', ...Array.from({ length: 30 }, (_, k) => `draw_${k + 1}`), 'average'];
-  const rows = history.map(r => [r.date, ...r.draws, r.average]);
-  const csv = [header, ...rows].map(row => row.join(',')).join('\n');
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `f${i}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {

@@ -314,22 +314,7 @@ h2 {
   margin-left: 4px;
 }
 
-.export-btn {
-  background: #C5D2F8;
-  color: #4F0C28;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 18px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s;
-}
 
-.export-btn:hover {
-  background: #8FA3E8;
-  color: white;
-}
 
 /* ── History table ──────────────────────────────────────────────────────── */
 .history-section {
