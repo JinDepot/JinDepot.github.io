@@ -68,7 +68,9 @@ async function submitPAT() {
 
 // ── Exponential sampler (inverse CDF, mean parameterization) ─────────────────
 function exponentialSample(mean) {
-  return -mean * Math.log(Math.random());
+  let u = Math.random();
+  while (u === 0) u = Math.random();
+  return -mean * Math.log(u);
 }
 
 function draw30() {
@@ -103,7 +105,10 @@ function syncToSheet(section, date, draws, average) {
     body: JSON.stringify({ section, date, draws, average, token: APPS_SCRIPT_SECRET }),
     redirect: 'follow'
   })
-    .then(() => {
+    .then(res => res.text())
+    .then(text => {
+      try { var json = JSON.parse(text); } catch (_) { json = null; }
+      if (json && json.ok === false) throw new Error(json.error || 'unknown');
       syncStatus.textContent = '✓ 구글 시트에 저장됨';
       syncStatus.className = 'sync-status success';
     })
@@ -115,6 +120,7 @@ function syncToSheet(section, date, draws, average) {
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let selectedSection = null;
+let displayedDrawDate = null;
 
 // ── UI actions ────────────────────────────────────────────────────────────────
 function selectSection(i) {
@@ -178,6 +184,7 @@ function renderCards(draws, average, i) {
   document.getElementById('cards-section-num').textContent = i;
   document.getElementById('avg-display').textContent = average.toFixed(2);
   document.getElementById('cards-section').style.display = 'block';
+  displayedDrawDate = getToday();
 }
 
 function renderHistory(i) {
@@ -239,18 +246,23 @@ function runFlush() {
   if (!confirm(`분반 ${selectedSection}의 "${date}" 기록을 삭제하시겠습니까?`)) return;
 
   const status = document.getElementById('flush-status');
+  const flushBtn = document.getElementById('flush-btn');
   status.textContent = '삭제 중...';
   status.className = 'flush-status syncing';
+  flushBtn.disabled = true;
 
-  // Remove from localStorage
-  const history = loadHistory(selectedSection);
-  const filtered = history.filter(h => h.date !== date);
+  // Save backup for rollback
+  const backup = loadHistory(selectedSection);
+  const filtered = backup.filter(h => h.date !== date);
   saveHistory(selectedSection, filtered);
   renderHistory(selectedSection);
   renderFlush(selectedSection);
 
-  // Hide cards section since flushed data may have been displayed
-  document.getElementById('cards-section').style.display = 'none';
+  // Only hide cards if the flushed date matches the currently displayed draw
+  if (displayedDrawDate === date) {
+    document.getElementById('cards-section').style.display = 'none';
+    displayedDrawDate = null;
+  }
 
   // Remove from Google Sheet
   fetch(APPS_SCRIPT_URL, {
@@ -259,12 +271,19 @@ function runFlush() {
     body: JSON.stringify({ action: 'flush', section: selectedSection, date: date, token: APPS_SCRIPT_SECRET }),
     redirect: 'follow'
   })
-    .then(() => {
+    .then(res => res.text())
+    .then(text => {
+      try { var json = JSON.parse(text); } catch (_) { json = null; }
+      if (json && json.ok === false) throw new Error(json.error || 'unknown');
       status.textContent = '삭제 완료';
       status.className = 'flush-status success';
     })
     .catch(() => {
-      status.textContent = '시트 삭제 실패';
+      // Rollback local data
+      saveHistory(selectedSection, backup);
+      renderHistory(selectedSection);
+      renderFlush(selectedSection);
+      status.textContent = '시트 삭제 실패 — 로컬 복원됨';
       status.className = 'flush-status error';
     });
 }
