@@ -1,5 +1,5 @@
 // ── Config ───────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbwh1sZVt_gSfV4Uo5vZAE6DP0mzQ5ssyzaZpi2JRVSENXWLD4jLna04yGcuP7FTq9o/exec';
+const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbyRwEi065j52HZ-m2STWL0U1PGdGkH0f23b9kQJukpw2DmDNCyPGJcPAckj0Umv583z/exec';
 const APPS_SCRIPT_SECRET = '8aa9e3b8642204f98a98d86f390858f5f6b91f99';
 const AUTHORIZED_USER    = 'JinDepot';
 
