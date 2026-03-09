@@ -12,7 +12,7 @@ function doGet(e) {
   return ContentService.createTextOutput('Course Raffle: Apps Script running.');
 }
 
-// ── Record draw results ─────────────────────────────────────────────────────
+// ── Handle POST requests ────────────────────────────────────────────────────
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -33,11 +33,46 @@ function doPost(e) {
     var ss = SpreadsheetApp.openById(sheetId);
     var sheet = ss.getSheets()[0];
 
-    // Row: date | draw1 | draw2 | ... | draw30 | average
-    var row = [data.date].concat(data.draws).concat([data.average]);
-    sheet.appendRow(row);
+    // ── Route by action ──────────────────────────────────────────────────
+    var action = data.action || 'record';
 
-    return ContentService.createTextOutput(JSON.stringify({ ok: true }))
+    if (action === 'record') {
+      // Row: date | draw1 | draw2 | ... | draw30 | average
+      var row = [data.date].concat(data.draws).concat([data.average]);
+      sheet.appendRow(row);
+      return ContentService.createTextOutput(JSON.stringify({ ok: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'flush') {
+      // Delete all rows where column A matches data.date (bottom-up to preserve indices)
+      var lastRow = sheet.getLastRow();
+      var deleted = 0;
+      if (lastRow > 0) {
+        var dates = sheet.getRange(1, 1, lastRow, 1).getValues();
+        for (var r = lastRow; r >= 1; r--) {
+          var cellVal = dates[r - 1][0];
+          // Normalize: if Sheets auto-converted to Date, format as YYYY-MM-DD
+          var cellStr;
+          if (cellVal instanceof Date) {
+            var y = cellVal.getFullYear();
+            var m = ('0' + (cellVal.getMonth() + 1)).slice(-2);
+            var d = ('0' + cellVal.getDate()).slice(-2);
+            cellStr = y + '-' + m + '-' + d;
+          } else {
+            cellStr = String(cellVal);
+          }
+          if (cellStr === String(data.date)) {
+            sheet.deleteRow(r);
+            deleted++;
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ ok: true, deleted: deleted }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: 'unknown action' }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {

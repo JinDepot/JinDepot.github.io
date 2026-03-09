@@ -1,5 +1,5 @@
 // ── Config ───────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbyRwEi065j52HZ-m2STWL0U1PGdGkH0f23b9kQJukpw2DmDNCyPGJcPAckj0Umv583z/exec';
+const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbwLetf7VWjQezpHnfi-ezLuHl_r81vUPL6eCO5Yjley86O6ygdAxP4l6CpIFhjJ_XbC/exec';
 const APPS_SCRIPT_SECRET = '8aa9e3b8642204f98a98d86f390858f5f6b91f99';
 const AUTHORIZED_USER    = 'JinDepot';
 
@@ -129,6 +129,7 @@ function selectSection(i) {
 
   document.getElementById('cards-section').style.display = 'none';
   renderHistory(i);
+  renderFlush(i);
 }
 
 function runDraw() {
@@ -142,6 +143,7 @@ function runDraw() {
 
   renderCards(draws, average, selectedSection);
   renderHistory(selectedSection);
+  renderFlush(selectedSection);
   syncToSheet(selectedSection, getToday(), draws, average);
 }
 
@@ -199,10 +201,78 @@ function renderHistory(i) {
 }
 
 
+// ── Flush ────────────────────────────────────────────────────────────────────
+function renderFlush(i) {
+  const history = loadHistory(i);
+  const select = document.getElementById('flush-date');
+  const btn = document.getElementById('flush-btn');
+  const status = document.getElementById('flush-status');
+
+  select.innerHTML = '<option value="">날짜를 선택하세요</option>';
+  status.textContent = '';
+  btn.disabled = true;
+
+  // Get unique dates (most recent first)
+  const dates = [...new Set(history.map(h => h.date))].reverse();
+  dates.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = d;
+    select.appendChild(opt);
+  });
+
+  document.getElementById('flush-section').style.display = dates.length > 0 ? 'block' : 'none';
+}
+
+function onFlushDateChange() {
+  const val = document.getElementById('flush-date').value;
+  document.getElementById('flush-btn').disabled = !val;
+}
+
+function runFlush() {
+  if (!selectedSection) return;
+  const select = document.getElementById('flush-date');
+  const date = select.value;
+  if (!date) return;
+
+  if (!confirm(`분반 ${selectedSection}의 "${date}" 기록을 삭제하시겠습니까?`)) return;
+
+  const status = document.getElementById('flush-status');
+  status.textContent = '삭제 중...';
+  status.className = 'flush-status syncing';
+
+  // Remove from localStorage
+  const history = loadHistory(selectedSection);
+  const filtered = history.filter(h => h.date !== date);
+  saveHistory(selectedSection, filtered);
+  renderHistory(selectedSection);
+  renderFlush(selectedSection);
+
+  // Hide cards section since flushed data may have been displayed
+  document.getElementById('cards-section').style.display = 'none';
+
+  // Remove from Google Sheet
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'flush', section: selectedSection, date: date, token: APPS_SCRIPT_SECRET }),
+    redirect: 'follow'
+  })
+    .then(() => {
+      status.textContent = '삭제 완료';
+      status.className = 'flush-status success';
+    })
+    .catch(() => {
+      status.textContent = '시트 삭제 실패';
+      status.className = 'flush-status error';
+    });
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pat-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitPAT();
   });
+  document.getElementById('flush-date').addEventListener('change', onFlushDateChange);
   // initAuth(); // temporarily disabled for local testing
 });

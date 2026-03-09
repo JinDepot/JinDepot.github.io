@@ -354,6 +354,62 @@ h2 {
   background: #EDF0FD;
 }
 
+/* ── Flush section ─────────────────────────────────────────────────────── */
+.flush-section {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.flush-select {
+  padding: 10px 14px;
+  border: 2px solid #C5D2F8;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #4F0C28;
+  background: white;
+  outline: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: border-color 0.15s;
+}
+
+.flush-select:focus {
+  border-color: #4F0C28;
+}
+
+.flush-btn {
+  background: #c62828;
+  color: white;
+  border: 2px solid #c62828;
+  border-radius: 12px;
+  padding: 10px 32px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.flush-btn:hover:not(:disabled) {
+  background: #a01010;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.35);
+}
+
+.flush-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.flush-status {
+  min-height: 1.2em;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.flush-status.syncing { color: #9A6070; }
+.flush-status.success { color: #2e7d32; }
+.flush-status.error   { color: #c62828; }
+
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 560px) {
   h1 { font-size: 1.7rem; }

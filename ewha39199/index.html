@@ -55,6 +55,14 @@
         <tbody id="history-body"></tbody>
       </table>
     </section>
+
+    <section class="flush-section" id="flush-section" style="display:none">
+      <select id="flush-date" class="flush-select">
+        <option value="">날짜를 선택하세요</option>
+      </select>
+      <button class="flush-btn" id="flush-btn" onclick="runFlush()" disabled>Flush</button>
+      <p class="flush-status" id="flush-status"></p>
+    </section>
   </div>
 
   <script src="app.js"></script>
