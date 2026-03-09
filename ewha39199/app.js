@@ -125,7 +125,9 @@ function selectSection(i) {
   });
   document.getElementById('selected-label').textContent = `선택된 분반: ${i}`;
 
-  document.getElementById('draw-btn').disabled = false; // auth check temporarily disabled
+  if (authenticated) {
+    document.getElementById('draw-btn').disabled = false;
+  }
 
   document.getElementById('cards-section').style.display = 'none';
   renderHistory(i);
@@ -133,8 +135,7 @@ function selectSection(i) {
 }
 
 function runDraw() {
-  // if (!authenticated || !selectedSection) return; // temporarily disabled for local testing
-  if (!selectedSection) return;
+  if (!authenticated || !selectedSection) return;
 
   const { draws, average } = draw30();
   const history = loadHistory(selectedSection);
@@ -274,5 +275,5 @@ window.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') submitPAT();
   });
   document.getElementById('flush-date').addEventListener('change', onFlushDateChange);
-  // initAuth(); // temporarily disabled for local testing
+  initAuth();
 });
