@@ -66,18 +66,16 @@ async function submitPAT() {
   }
 }
 
-// ── Poisson sampler (Knuth algorithm) ────────────────────────────────────────
-function poissonSample(lambda) {
-  const L = Math.exp(-lambda);
-  let k = 0, p = 1;
-  do { k++; p *= Math.random(); } while (p > L);
-  return k - 1;
+// ── Exponential sampler (inverse CDF, mean parameterization) ─────────────────
+function exponentialSample(mean) {
+  return -mean * Math.log(Math.random());
 }
 
 function draw30() {
-  const draws = Array.from({ length: 30 }, () => poissonSample(11.1));
-  const average = +(draws.reduce((a, b) => a + b, 0) / 30).toFixed(2);
-  return { draws, average };
+  const rawDraws = Array.from({ length: 30 }, () => exponentialSample(11.1));
+  const average = rawDraws.reduce((a, b) => a + b, 0) / 30;
+  // Store raw values; round only at display time
+  return { draws: rawDraws, average };
 }
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
@@ -127,17 +125,15 @@ function selectSection(i) {
   });
   document.getElementById('selected-label').textContent = `선택된 분반: ${i}`;
 
-  // Only enable draw button if authenticated
-  if (authenticated) {
-    document.getElementById('draw-btn').disabled = false;
-  }
+  document.getElementById('draw-btn').disabled = false; // auth check temporarily disabled
 
   document.getElementById('cards-section').style.display = 'none';
   renderHistory(i);
 }
 
 function runDraw() {
-  if (!authenticated || !selectedSection) return;
+  // if (!authenticated || !selectedSection) return; // temporarily disabled for local testing
+  if (!selectedSection) return;
 
   const { draws, average } = draw30();
   const history = loadHistory(selectedSection);
@@ -171,13 +167,13 @@ function renderCards(draws, average, i) {
     card.style.backgroundColor = randomPastel();
     card.innerHTML = `
       <span class="card-index">${idx + 1}</span>
-      <span class="card-value">${val}</span>
+      <span class="card-value">${val.toFixed(2)}</span>
     `;
     grid.appendChild(card);
   });
 
   document.getElementById('cards-section-num').textContent = i;
-  document.getElementById('avg-display').textContent = average;
+  document.getElementById('avg-display').textContent = average.toFixed(2);
   document.getElementById('cards-section').style.display = 'block';
 }
 
@@ -194,7 +190,7 @@ function renderHistory(i) {
   [...history].reverse().forEach((row, idx) => {
     const tr = document.createElement('tr');
     const rowNum = history.length - idx;
-    tr.innerHTML = `<td>${rowNum}</td><td>${row.date}</td><td>${row.average}</td>`;
+    tr.innerHTML = `<td>${rowNum}</td><td>${row.date}</td><td>${Number(row.average).toFixed(2)}</td>`;
     tbody.appendChild(tr);
   });
 
@@ -208,5 +204,5 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pat-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitPAT();
   });
-  initAuth();
+  // initAuth(); // temporarily disabled for local testing
 });
