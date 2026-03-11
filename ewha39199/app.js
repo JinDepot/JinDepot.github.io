@@ -99,6 +99,27 @@ function selectSection(i) {
   document.getElementById('cards-section').style.display = 'none';
   renderHistory(i);
   renderFlush(i);
+  loadFromSheet(i);
+}
+
+async function loadFromSheet(i) {
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'read', section: i, token: APPS_SCRIPT_SECRET }),
+      redirect: 'follow'
+    });
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); } catch (_) { json = null; }
+    if (!json || json.ok === false) return;
+    saveHistory(i, json.records);
+    if (selectedSection === i) {
+      renderHistory(i);
+      renderFlush(i);
+    }
+  } catch (_) {}
 }
 
 async function runDraw() {
