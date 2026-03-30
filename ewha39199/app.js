@@ -1,6 +1,7 @@
 // ── Config ───────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbwLetf7VWjQezpHnfi-ezLuHl_r81vUPL6eCO5Yjley86O6ygdAxP4l6CpIFhjJ_XbC/exec';
-const APPS_SCRIPT_SECRET = '8aa9e3b8642204f98a98d86f390858f5f6b91f99';
+//const APPS_SCRIPT_SECRET = '8aa9e3b8642204f98a98d86f390858f5f6b91f99';
+const APPS_SCRIPT_SECRET = 'BB8iiV2xK6KSUBRMG94tG3B40BP8oE4UycHN';
 const AUTHORIZED_USER    = 'JinDepot';
 
 // ── Auth state ───────────────────────────────────────────────────────────────
